@@ -19,9 +19,6 @@ $allowed_transitions = [
 ];
 $si      = $status_map[$booking->status] ?? ['secondary', $booking->status];
 $next    = $allowed_transitions[$booking->status] ?? [];
-$csrf_name = $this->security->get_csrf_token_name();
-$csrf_hash = $this->security->get_csrf_hash();
-
 $steps = ['pending', 'confirmed', 'in_progress', 'waiting_payment', 'completed'];
 $step_labels = ['Menunggu', 'Dikonfirmasi', 'Diservis', 'Tunggu Bayar', 'Selesai'];
 $current_step = array_search($booking->status, $steps);
@@ -397,14 +394,6 @@ if ($current_step === false) $current_step = -1;
 
 <script>
     const BOOKING_ID = <?= (int)$booking->id ?>;
-    const CSRF_NAME = '<?= $csrf_name ?>';
-    let CSRF_HASH = '<?= $csrf_hash ?>';
-
-    function csrfData(extra) {
-        const d = {};
-        d[CSRF_NAME] = CSRF_HASH;
-        return Object.assign(d, extra || {});
-    }
 
     // Toggle jasa/part fields
     document.querySelectorAll('input[name="order_type"]').forEach(r => {
@@ -423,9 +412,9 @@ if ($current_step === false) $current_step = -1;
     // Save service order
     document.getElementById('btnSaveOrder')?.addEventListener('click', function() {
         const type = document.querySelector('input[name="order_type"]:checked').value;
-        let data = csrfData({
+        let data = {
             type
-        });
+        };
 
         if (type === 'jasa') {
             data.description = document.getElementById('jasaDesc').value.trim();
@@ -440,12 +429,8 @@ if ($current_step === false) $current_step = -1;
         $.ajax({
             url: BASE_URL + 'admin/booking/' + BOOKING_ID + '/add-order',
             method: 'POST',
-            headers: {
-                'X-CSRF-Token': CSRF_HASH
-            },
             data: data,
             success: function(r) {
-                CSRF_HASH = r.csrf_hash || CSRF_HASH;
                 if (r.success) {
                     bootstrap.Modal.getInstance(document.getElementById('modalAddOrder')).hide();
                     Swal.fire({
@@ -480,12 +465,7 @@ if ($current_step === false) $current_step = -1;
                 $.ajax({
                     url: BASE_URL + 'admin/service-order/' + id + '/delete',
                     method: 'POST',
-                    headers: {
-                        'X-CSRF-Token': CSRF_HASH
-                    },
-                    data: csrfData(),
                     success: function(r) {
-                        CSRF_HASH = r.csrf_hash || CSRF_HASH;
                         if (r.success) {
                             location.reload();
                         } else Swal.fire({
@@ -506,15 +486,11 @@ if ($current_step === false) $current_step = -1;
         $.ajax({
             url: BASE_URL + 'admin/booking/' + BOOKING_ID + '/status',
             method: 'POST',
-            headers: {
-                'X-CSRF-Token': CSRF_HASH
-            },
-            data: csrfData({
+            data: {
                 status,
                 admin_note: note
-            }),
+            },
             success: function(r) {
-                CSRF_HASH = r.csrf_hash || CSRF_HASH;
                 if (r.success) {
                     Swal.fire({
                         icon: 'success',
@@ -540,14 +516,10 @@ if ($current_step === false) $current_step = -1;
         $.ajax({
             url: BASE_URL + 'admin/booking/' + BOOKING_ID + '/mechanic-note',
             method: 'POST',
-            headers: {
-                'X-CSRF-Token': CSRF_HASH
-            },
-            data: csrfData({
+            data: {
                 note
-            }),
+            },
             success: function(r) {
-                CSRF_HASH = r.csrf_hash || CSRF_HASH;
                 if (r.success) Swal.fire({
                     icon: 'success',
                     title: 'Tersimpan',
@@ -613,12 +585,7 @@ if ($current_step === false) $current_step = -1;
             $.ajax({
                 url: BASE_URL + 'admin/payment/' + pid + '/confirm',
                 method: 'POST',
-                headers: {
-                    'X-CSRF-Token': CSRF_HASH
-                },
-                data: csrfData(),
                 success: r => {
-                    CSRF_HASH = r.csrf_hash || CSRF_HASH;
                     if (r.success) location.reload();
                     else Swal.fire({
                         icon: 'error',
@@ -644,14 +611,10 @@ if ($current_step === false) $current_step = -1;
             $.ajax({
                 url: BASE_URL + 'admin/payment/' + pid + '/reject',
                 method: 'POST',
-                headers: {
-                    'X-CSRF-Token': CSRF_HASH
-                },
-                data: csrfData({
+                data: {
                     note: res.value
-                }),
+                },
                 success: r => {
-                    CSRF_HASH = r.csrf_hash || CSRF_HASH;
                     if (r.success) location.reload();
                     else Swal.fire({
                         icon: 'error',

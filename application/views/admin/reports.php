@@ -1,45 +1,105 @@
 <?php
 $year = date('Y');
 ?>
-<div class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="fs-2hx fw-bold">Laporan Keuangan</h1>
-</div>
 
-<!-- Tab Navigation -->
-<ul class="nav nav-tabs nav-line-tabs mb-6 fs-6" id="reportTabs">
-    <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="tab" href="#tabHarian">Laporan Harian</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#tabBulanan">Laporan Bulanan</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#tabTahunan">Laporan Tahunan</a>
-    </li>
-</ul>
+<section class="admin-page-hero">
+    <div class="row g-4 align-items-end">
+        <div class="col-xl-7">
+            <div class="admin-page-hero__eyebrow">Insights workspace</div>
+            <h2 class="admin-page-hero__title fw-bold">Baca performa pendapatan harian, bulanan, dan tahunan dalam satu workspace yang lebih ringkas.</h2>
+            <p class="admin-page-hero__desc">Area laporan disusun ulang agar pemilik bengkel dan admin bisa berpindah antar periode lebih cepat, membaca ringkasan secara jelas, dan tetap nyaman di layar mobile.</p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <span class="admin-chip"><i class="fa-solid fa-chart-column"></i>Laporan harian, bulanan, dan tahunan</span>
+                <span class="admin-chip"><i class="fa-solid fa-file-export"></i>Export CSV tetap tersedia</span>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4"><i class="fa-solid fa-calendar-day fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Mode harian</div>
+                        <div class="fs-5 fw-bold mt-1">Tinjau detail invoice</div>
+                        <div class="text-muted fs-7 mt-2">Cocok untuk cek transaksi dan metode bayar harian.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(14, 165, 233, 0.16); color: #0284c7;"><i class="fa-solid fa-calendar-week fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Mode bulanan</div>
+                        <div class="fs-5 fw-bold mt-1">Lihat pola mingguan</div>
+                        <div class="text-muted fs-7 mt-2">Grafik batang membantu membaca ritme pemasukan.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(99, 102, 241, 0.16); color: #4f46e5;"><i class="fa-solid fa-calendar fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Mode tahunan</div>
+                        <div class="fs-5 fw-bold mt-1">Bandingkan tren bulan</div>
+                        <div class="text-muted fs-7 mt-2">Mudah melihat periode puncak dan penurunan omzet.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(16, 185, 129, 0.16); color: #059669;"><i class="fa-solid fa-mobile-screen-button fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Responsive audit</div>
+                        <div class="fs-5 fw-bold mt-1">Lebih nyaman di mobile</div>
+                        <div class="text-muted fs-7 mt-2">Filter, tab, dan tabel tetap terbaca di layar sempit.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="admin-surface-card mb-6">
+    <div class="card-body p-5 p-lg-7">
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-4 mb-4">
+            <div>
+                <div class="text-muted fs-8 text-uppercase fw-semibold mb-2">Pilih periode analisis</div>
+                <h3 class="fw-bold mb-0">Beralih antar tab laporan tanpa meninggalkan konteks halaman</h3>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="admin-chip"><i class="fa-solid fa-wave-square"></i>Grafik interaktif</span>
+                <span class="admin-chip"><i class="fa-solid fa-table"></i>Rekap tabel detail</span>
+            </div>
+        </div>
+        <ul class="nav nav-tabs nav-line-tabs fs-6" id="reportTabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#tabHarian">Laporan Harian</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tabBulanan">Laporan Bulanan</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tabTahunan">Laporan Tahunan</a>
+            </li>
+        </ul>
+    </div>
+</div>
 
 <div class="tab-content">
 
     <!-- TAB: HARIAN -->
     <div class="tab-pane fade show active" id="tabHarian">
-        <div class="card card-flush mb-5">
-            <div class="card-body py-4">
-                <div class="d-flex align-items-end gap-3 flex-wrap">
-                    <div>
-                        <label class="form-label fs-7 mb-1">Pilih Tanggal</label>
-                        <input type="date" id="dailyDate" class="form-control form-control-sm" value="<?= date('Y-m-d') ?>">
+        <div class="admin-surface-card mb-6">
+            <div class="card-body p-5 p-lg-7">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label fw-semibold">Pilih tanggal</label>
+                        <input type="date" id="dailyDate" class="form-control form-control-lg" value="<?= date('Y-m-d') ?>">
                     </div>
-                    <button class="btn btn-sm btn-primary" id="btnLoadDaily">
-                        <i class="fa-solid fa-chart-bar me-1"></i>Tampilkan
-                    </button>
+                    <div class="col-md-6 col-lg-3">
+                        <button class="btn btn-primary btn-lg w-100" id="btnLoadDaily">
+                            <i class="fa-solid fa-chart-bar me-2"></i>Tampilkan laporan
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="dailyResult" class="d-none">
-            <!-- Summary Cards -->
             <div class="row g-4 mb-5" id="dailySummary"></div>
-            <!-- Table -->
             <div class="card card-flush">
                 <div class="card-header">
                     <h3 class="card-title" id="dailyTitle">Transaksi Harian</h3>
@@ -71,12 +131,12 @@ $year = date('Y');
 
     <!-- TAB: BULANAN -->
     <div class="tab-pane fade" id="tabBulanan">
-        <div class="card card-flush mb-5">
-            <div class="card-body py-4">
-                <div class="d-flex align-items-end gap-3 flex-wrap">
-                    <div>
-                        <label class="form-label fs-7 mb-1">Bulan</label>
-                        <select id="monthlyMonth" class="form-select form-select-sm w-150px">
+        <div class="admin-surface-card mb-6">
+            <div class="card-body p-5 p-lg-7">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4 col-lg-3">
+                        <label class="form-label fw-semibold">Bulan</label>
+                        <select id="monthlyMonth" class="form-select form-select-lg">
                             <?php for ($m = 1; $m <= 12; $m++): ?>
                                 <option value="<?= $m ?>" <?= $m == date('n') ? 'selected' : '' ?>>
                                     <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
@@ -84,13 +144,15 @@ $year = date('Y');
                             <?php endfor; ?>
                         </select>
                     </div>
-                    <div>
-                        <label class="form-label fs-7 mb-1">Tahun</label>
-                        <input type="number" id="monthlyYear" class="form-control form-control-sm w-100px" value="<?= $year ?>" min="2020">
+                    <div class="col-md-4 col-lg-3">
+                        <label class="form-label fw-semibold">Tahun</label>
+                        <input type="number" id="monthlyYear" class="form-control form-control-lg" value="<?= $year ?>" min="2020">
                     </div>
-                    <button class="btn btn-sm btn-primary" id="btnLoadMonthly">
-                        <i class="fa-solid fa-chart-line me-1"></i>Tampilkan
-                    </button>
+                    <div class="col-md-4 col-lg-3">
+                        <button class="btn btn-primary btn-lg w-100" id="btnLoadMonthly">
+                            <i class="fa-solid fa-chart-line me-2"></i>Tampilkan laporan
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -132,16 +194,18 @@ $year = date('Y');
 
     <!-- TAB: TAHUNAN -->
     <div class="tab-pane fade" id="tabTahunan">
-        <div class="card card-flush mb-5">
-            <div class="card-body py-4">
-                <div class="d-flex align-items-end gap-3 flex-wrap">
-                    <div>
-                        <label class="form-label fs-7 mb-1">Tahun</label>
-                        <input type="number" id="yearlyYear" class="form-control form-control-sm w-120px" value="<?= $year ?>" min="2020">
+        <div class="admin-surface-card mb-6">
+            <div class="card-body p-5 p-lg-7">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4 col-lg-3">
+                        <label class="form-label fw-semibold">Tahun</label>
+                        <input type="number" id="yearlyYear" class="form-control form-control-lg" value="<?= $year ?>" min="2020">
                     </div>
-                    <button class="btn btn-sm btn-primary" id="btnLoadYearly">
-                        <i class="fa-solid fa-chart-line me-1"></i>Tampilkan
-                    </button>
+                    <div class="col-md-4 col-lg-3">
+                        <button class="btn btn-primary btn-lg w-100" id="btnLoadYearly">
+                            <i class="fa-solid fa-chart-line me-2"></i>Tampilkan laporan
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -185,7 +249,13 @@ $year = date('Y');
     }
 
     function summaryCard(label, value, color) {
-        return '<div class="col-sm-4"><div class="card card-flush border-0 bg-light-' + color + '"><div class="card-body py-4"><span class="text-muted fs-8 d-block mb-1">' + label + '</span><span class="fs-3 fw-bold text-' + color + '">' + value + '</span></div></div></div>';
+        var iconMap = {
+            success: 'fa-wallet',
+            info: 'fa-arrow-trend-up',
+            primary: 'fa-chart-pie',
+            warning: 'fa-hourglass-half'
+        };
+        return '<div class="col-md-6 col-xl-4"><div class="admin-kpi-card h-100"><div class="admin-kpi-card__icon mb-4"><i class="fa-solid ' + (iconMap[color] || 'fa-chart-simple') + ' fs-3"></i></div><div class="text-muted fs-8 text-uppercase fw-semibold">' + label + '</div><div class="fs-3 fw-bold mt-1">' + value + '</div><div class="text-muted fs-7 mt-2">Ringkasan otomatis sesuai periode yang dipilih.</div></div></div>';
     }
 
     // DAILY

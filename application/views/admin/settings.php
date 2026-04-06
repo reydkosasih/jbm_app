@@ -1,7 +1,4 @@
 <?php
-$csrf_name = $this->security->get_csrf_token_name();
-$csrf_hash = $this->security->get_csrf_hash();
-
 // Helper to get setting value or default
 function sv($settings, $key, $default = '')
 {
@@ -141,21 +138,6 @@ function sv($settings, $key, $default = '')
 </div>
 
 <script>
-    const CSRF_NAME = '<?= $csrf_name ?>';
-    let CSRF_HASH = '<?= $csrf_hash ?>';
-
-    function hdrs() {
-        return {
-            'X-CSRF-Token': CSRF_HASH
-        };
-    }
-
-    function csrfData(extra) {
-        const d = {};
-        d[CSRF_NAME] = CSRF_HASH;
-        return Object.assign(d, extra || {});
-    }
-
     document.querySelectorAll('.btn-save-section').forEach(function(btn) {
         btn.addEventListener('click', function() {
             const section = this.dataset.section;
@@ -175,12 +157,10 @@ function sv($settings, $key, $default = '')
                 $.ajax({
                     url: BASE_URL + 'admin/settings/save',
                     method: 'POST',
-                    headers: hdrs(),
-                    data: csrfData({
+                    data: {
                         settings: JSON.stringify(payload)
-                    }),
+                    },
                     success: function(r) {
-                        CSRF_HASH = r.csrf_hash || CSRF_HASH;
                         if (r.success) {
                             Swal.fire({
                                 icon: 'success',

@@ -1,7 +1,3 @@
-<?php
-$csrf_name = $this->security->get_csrf_token_name();
-$csrf_hash = $this->security->get_csrf_hash();
-?>
 <div class="d-flex justify-content-between align-items-center mb-5">
     <h1 class="fs-2hx fw-bold">Galeri Bengkel</h1>
 </div>
@@ -81,15 +77,6 @@ $csrf_hash = $this->security->get_csrf_hash();
 </div>
 
 <script>
-    const CSRF_NAME = '<?= $csrf_name ?>';
-    let CSRF_HASH = '<?= $csrf_hash ?>';
-
-    function hdrs() {
-        return {
-            'X-CSRF-Token': CSRF_HASH
-        };
-    }
-
     // Dropzone click
     const dropzone = document.getElementById('uploadDropzone');
     const fileInput = document.getElementById('galleryFiles');
@@ -145,7 +132,6 @@ $csrf_hash = $this->security->get_csrf_hash();
         Array.from(files).forEach(function(file) {
             const fd = new FormData();
             fd.append('image', file);
-            fd.append(CSRF_NAME, CSRF_HASH);
 
             $.ajax({
                 url: BASE_URL + 'admin/gallery/upload',
@@ -153,9 +139,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                 data: fd,
                 processData: false,
                 contentType: false,
-                headers: hdrs(),
                 success: function(r) {
-                    CSRF_HASH = r.csrf_hash || CSRF_HASH;
                     done++;
                     const pct = Math.round((done / files.length) * 100);
                     bar.style.width = pct + '%';
@@ -186,15 +170,10 @@ $csrf_hash = $this->security->get_csrf_hash();
                 confirmButtonText: 'Ya, hapus'
             }).then(function(res) {
                 if (!res.isConfirmed) return;
-                const data = {};
-                data[CSRF_NAME] = CSRF_HASH;
                 $.ajax({
                     url: BASE_URL + 'admin/gallery/' + id + '/delete',
                     method: 'POST',
-                    headers: hdrs(),
-                    data: data,
                     success: function(r) {
-                        CSRF_HASH = r.csrf_hash || CSRF_HASH;
                         if (r.success) {
                             document.getElementById('gallery-item-' + id).remove();
                             Swal.fire({

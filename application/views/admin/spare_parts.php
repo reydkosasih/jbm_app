@@ -1,7 +1,3 @@
-<?php
-$csrf_name = $this->security->get_csrf_token_name();
-$csrf_hash = $this->security->get_csrf_hash();
-?>
 <div class="d-flex justify-content-between align-items-center mb-5">
     <h1 class="fs-2hx fw-bold">Manajemen Sparepart</h1>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddPart">
@@ -214,37 +210,20 @@ $csrf_hash = $this->security->get_csrf_hash();
 </div>
 
 <script>
-    const CSRF_NAME = '<?= $csrf_name ?>';
-    let CSRF_HASH = '<?= $csrf_hash ?>';
-
-    function csrfData(extra) {
-        const d = {};
-        d[CSRF_NAME] = CSRF_HASH;
-        return Object.assign(d, extra || {});
-    }
-
-    function hdrs() {
-        return {
-            'X-CSRF-Token': CSRF_HASH
-        };
-    }
-
     // Add part
     document.getElementById('btnAddPart').addEventListener('click', function() {
         $.ajax({
             url: BASE_URL + 'admin/spare-parts/store',
             method: 'POST',
-            headers: hdrs(),
-            data: csrfData({
+            data: {
                 name: document.getElementById('addName').value,
                 sku: document.getElementById('addSku').value,
                 stock: document.getElementById('addStock').value,
                 min_stock: document.getElementById('addMinStock').value,
                 purchase_price: document.getElementById('addPurchase').value,
                 selling_price: document.getElementById('addSelling').value,
-            }),
+            },
             success: r => {
-                CSRF_HASH = r.csrf_hash || CSRF_HASH;
                 if (r.success) location.reload();
                 else Swal.fire({
                     icon: 'error',
@@ -274,17 +253,15 @@ $csrf_hash = $this->security->get_csrf_hash();
         $.ajax({
             url: BASE_URL + 'admin/spare-parts/' + id + '/update',
             method: 'POST',
-            headers: hdrs(),
-            data: csrfData({
+            data: {
                 name: document.getElementById('editName').value,
                 sku: document.getElementById('editSku').value,
                 min_stock: document.getElementById('editMinStock').value,
                 purchase_price: document.getElementById('editPurchase').value,
                 selling_price: document.getElementById('editSelling').value,
                 is_active: document.getElementById('editActive').value,
-            }),
+            },
             success: r => {
-                CSRF_HASH = r.csrf_hash || CSRF_HASH;
                 if (r.success) location.reload();
                 else Swal.fire({
                     icon: 'error',
@@ -312,14 +289,12 @@ $csrf_hash = $this->security->get_csrf_hash();
         $.ajax({
             url: BASE_URL + 'admin/spare-parts/' + id + '/adjust-stock',
             method: 'POST',
-            headers: hdrs(),
-            data: csrfData({
+            data: {
                 type: document.querySelector('input[name="stock_type"]:checked').value,
                 qty: document.getElementById('stockQty').value,
                 note: document.getElementById('stockNote').value,
-            }),
+            },
             success: r => {
-                CSRF_HASH = r.csrf_hash || CSRF_HASH;
                 if (r.success) location.reload();
                 else Swal.fire({
                     icon: 'error',
