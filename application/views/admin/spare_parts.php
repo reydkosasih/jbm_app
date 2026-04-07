@@ -1,35 +1,105 @@
-<div class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="fs-2hx fw-bold">Manajemen Sparepart</h1>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddPart">
-        <i class="fa-solid fa-plus me-2"></i>Tambah Sparepart
-    </button>
-</div>
+<?php
+$parts_total = count($parts);
+$parts_active = 0;
+$parts_low = count($low_stock);
+$stock_value = 0;
 
-<!-- Low Stock Alert -->
+foreach ($parts as $part_item) {
+    $stock_value += ((float) ($part_item->stock ?? 0) * (float) ($part_item->selling_price ?? 0));
+    if (!empty($part_item->is_active)) {
+        $parts_active++;
+    }
+}
+?>
+
+<section class="admin-page-hero">
+    <div class="row g-4 align-items-end">
+        <div class="col-xl-7">
+            <div class="admin-page-hero__eyebrow">Spare part inventory</div>
+            <h2 class="admin-page-hero__title fw-bold">Jaga stok sparepart tetap sehat dengan ringkasan inventori yang lebih cepat dibaca.</h2>
+            <p class="admin-page-hero__desc">Halaman sparepart dirancang ulang agar admin bisa melihat stok rendah, nilai inventori, dan melakukan penyesuaian stok tanpa kehilangan konteks item.</p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <span class="admin-chip"><i class="fa-solid fa-boxes-stacked"></i><?= $parts_total ?> item tercatat</span>
+                <span class="admin-chip"><i class="fa-solid fa-triangle-exclamation"></i><?= $parts_low ?> stok rendah</span>
+                <span class="admin-chip"><i class="fa-solid fa-sack-dollar"></i>Nilai stok Rp <?= number_format($stock_value, 0, ',', '.') ?></span>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4"><i class="fa-solid fa-box-open fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Total sparepart</div>
+                        <div class="fs-2hx fw-bold mt-1"><?= $parts_total ?></div>
+                        <div class="text-muted fs-7 mt-2">Semua item inventori yang tersimpan.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(16, 185, 129, 0.16); color: #059669;"><i class="fa-solid fa-badge-check fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Aktif</div>
+                        <div class="fs-2hx fw-bold mt-1"><?= $parts_active ?></div>
+                        <div class="text-muted fs-7 mt-2">Item siap dipakai untuk transaksi dan servis.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(245, 158, 11, 0.16); color: #d97706;"><i class="fa-solid fa-triangle-exclamation fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Perlu restock</div>
+                        <div class="fs-2hx fw-bold mt-1"><?= $parts_low ?></div>
+                        <div class="text-muted fs-7 mt-2">Item yang sudah menyentuh batas minimum.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(14, 165, 233, 0.16); color: #0284c7;"><i class="fa-solid fa-plus fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Aksi cepat</div>
+                        <button class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#modalAddPart">Tambah sparepart</button>
+                        <div class="text-muted fs-7 mt-2">Masukkan item inventori baru langsung dari sini.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <?php if (!empty($low_stock)): ?>
-    <div class="alert alert-warning d-flex align-items-center mb-5" role="alert">
-        <i class="fa-solid fa-triangle-exclamation fs-4 me-3 text-warning"></i>
-        <div>
-            <strong><?= count($low_stock) ?> sparepart</strong> stoknya menipis:
-            <?= implode(', ', array_map(fn($s) => htmlspecialchars($s->name), $low_stock)) ?>
+    <div class="admin-surface-card mb-6">
+        <div class="card-body p-5 p-lg-7">
+            <div class="d-flex flex-wrap align-items-start justify-content-between gap-4">
+                <div>
+                    <div class="text-muted fs-8 text-uppercase fw-semibold mb-2">Peringatan stok</div>
+                    <h3 class="fw-bold mb-2">Item dengan stok minimum</h3>
+                    <p class="text-muted mb-0"><?= implode(', ', array_map(fn($s) => htmlspecialchars($s->name), $low_stock)) ?></p>
+                </div>
+                <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAddPart">
+                    <i class="fa-solid fa-plus me-2"></i>Tambah Sparepart
+                </button>
+            </div>
         </div>
     </div>
 <?php endif; ?>
 
-<div class="card card-flush">
-    <div class="card-body p-0">
+<div class="admin-surface-card overflow-hidden">
+    <div class="card-header border-0 pt-6 pb-0 px-5 px-lg-7">
+        <div>
+            <h3 class="fw-bold mb-1">Daftar sparepart</h3>
+            <div class="admin-table-meta">Pantau stok, margin jual, dan akses aksi stok dalam satu tabel inventori.</div>
+        </div>
+    </div>
+    <div class="card-body p-0 pt-5">
         <div class="table-responsive">
-            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4 fs-7">
+            <table class="table table-row-dashed align-middle gs-0 gy-0 fs-7 mb-0 admin-data-table">
                 <thead>
-                    <tr class="fw-bold text-muted bg-light">
-                        <th class="ps-4 min-w-130px rounded-start">SKU</th>
+                    <tr>
+                        <th class="ps-5">SKU</th>
                         <th class="min-w-200px">Nama Sparepart</th>
                         <th class="min-w-80px text-end">Stok</th>
                         <th class="min-w-80px text-end">Min. Stok</th>
                         <th class="min-w-100px text-end">Harga Beli</th>
                         <th class="min-w-100px text-end">Harga Jual</th>
-                        <th class="min-w-80px text-center">Status</th>
-                        <th class="min-w-100px text-end rounded-end pe-4">Aksi</th>
+                        <th class="min-w-80px">Status</th>
+                        <th class="min-w-100px text-end pe-5">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,8 +110,10 @@
                         <?php else: foreach ($parts as $p):
                             $low = $p->stock <= $p->min_stock; ?>
                             <tr>
-                                <td class="ps-4 text-muted fs-8"><?= htmlspecialchars($p->sku ?? '—') ?></td>
-                                <td class="fw-semibold"><?= htmlspecialchars($p->name) ?></td>
+                                <td class="ps-5 text-muted fs-8"><?= htmlspecialchars($p->sku ?? '—') ?></td>
+                                <td>
+                                    <div class="fw-semibold text-gray-900"><?= htmlspecialchars($p->name) ?></div>
+                                </td>
                                 <td class="text-end <?= $low ? 'text-danger fw-bold' : '' ?>">
                                     <?= $p->stock ?>
                                     <?php if ($low): ?><i class="fa-solid fa-triangle-exclamation text-danger ms-1 fs-8"></i><?php endif; ?>
@@ -49,12 +121,12 @@
                                 <td class="text-end text-muted"><?= $p->min_stock ?></td>
                                 <td class="text-end">Rp <?= number_format($p->purchase_price ?? 0, 0, ',', '.') ?></td>
                                 <td class="text-end fw-bold">Rp <?= number_format($p->selling_price, 0, ',', '.') ?></td>
-                                <td class="text-center">
-                                    <span class="badge badge-light-<?= $p->is_active ? 'success' : 'danger' ?>">
+                                <td>
+                                    <span class="badge badge-light-<?= $p->is_active ? 'success' : 'danger' ?> px-4 py-2">
                                         <?= $p->is_active ? 'Aktif' : 'Nonaktif' ?>
                                     </span>
                                 </td>
-                                <td class="text-end pe-4">
+                                <td class="text-end pe-5">
                                     <div class="d-flex gap-2 justify-content-end">
                                         <button class="btn btn-icon btn-sm btn-light-info btn-stock"
                                             data-id="<?= $p->id ?>" data-name="<?= htmlspecialchars($p->name) ?>" title="Atur Stok">

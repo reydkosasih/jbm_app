@@ -1,43 +1,124 @@
-<div class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="fs-2hx fw-bold">Manajemen Layanan</h1>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddService">
-        <i class="fa-solid fa-plus me-2"></i>Tambah Layanan
-    </button>
+<?php
+$service_total = count($services);
+$service_active = 0;
+$service_inactive = 0;
+$average_price = 0;
+
+foreach ($services as $service_item) {
+    $average_price += (float) ($service_item['base_price'] ?? 0);
+    if (!empty($service_item['is_active'])) {
+        $service_active++;
+    } else {
+        $service_inactive++;
+    }
+}
+
+$average_price = $service_total > 0 ? $average_price / $service_total : 0;
+?>
+
+<section class="admin-page-hero">
+    <div class="row g-4 align-items-end">
+        <div class="col-xl-7">
+            <div class="admin-page-hero__eyebrow">Service catalog</div>
+            <h2 class="admin-page-hero__title fw-bold">Susun daftar layanan bengkel dengan struktur harga dan durasi yang lebih mudah dipantau.</h2>
+            <p class="admin-page-hero__desc">Halaman layanan dirapikan agar admin cepat mengaudit katalog servis, menambah layanan baru, dan memperbarui detail tanpa tenggelam di tabel lama.</p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <span class="admin-chip"><i class="fa-solid fa-screwdriver-wrench"></i><?= $service_total ?> layanan tercatat</span>
+                <span class="admin-chip"><i class="fa-solid fa-circle-check"></i><?= $service_active ?> aktif</span>
+                <span class="admin-chip"><i class="fa-solid fa-clock"></i>Rata-rata <?= $service_total > 0 ? number_format($average_price, 0, ',', '.') : 0 ?> / layanan</span>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4"><i class="fa-solid fa-list fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Total layanan</div>
+                        <div class="fs-2hx fw-bold mt-1"><?= $service_total ?></div>
+                        <div class="text-muted fs-7 mt-2">Semua item katalog servis bengkel.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(16, 185, 129, 0.16); color: #059669;"><i class="fa-solid fa-badge-check fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Aktif</div>
+                        <div class="fs-2hx fw-bold mt-1"><?= $service_active ?></div>
+                        <div class="text-muted fs-7 mt-2">Layanan yang tampil dalam operasional.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(239, 68, 68, 0.14); color: #dc2626;"><i class="fa-solid fa-ban fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Nonaktif</div>
+                        <div class="fs-2hx fw-bold mt-1"><?= $service_inactive ?></div>
+                        <div class="text-muted fs-7 mt-2">Disimpan untuk arsip atau revisi.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(14, 165, 233, 0.16); color: #0284c7;"><i class="fa-solid fa-plus fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Aksi cepat</div>
+                        <button class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#modalAddService">Tambah layanan</button>
+                        <div class="text-muted fs-7 mt-2">Buat item baru tanpa pindah halaman.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="admin-surface-card mb-6">
+    <div class="card-body p-5 p-lg-7 d-flex flex-wrap align-items-center justify-content-between gap-4">
+        <div>
+            <div class="text-muted fs-8 text-uppercase fw-semibold mb-2">Kontrol katalog</div>
+            <h3 class="fw-bold mb-0">Kelola harga, durasi, dan status layanan</h3>
+        </div>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAddService">
+            <i class="fa-solid fa-plus me-2"></i>Tambah Layanan
+        </button>
+    </div>
 </div>
 
-<div class="card card-flush">
-    <div class="card-body p-0">
+<div class="admin-surface-card overflow-hidden">
+    <div class="card-header border-0 pt-6 pb-0 px-5 px-lg-7">
+        <div>
+            <h3 class="fw-bold mb-1">Daftar layanan</h3>
+            <div class="admin-table-meta">Daftar harga dan parameter layanan dengan tabel yang lebih mudah dibaca di desktop maupun mobile.</div>
+        </div>
+    </div>
+    <div class="card-body p-0 pt-5">
         <div class="table-responsive">
-            <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4 fs-7">
+            <table class="table table-row-dashed align-middle gs-0 gy-0 fs-7 mb-0 admin-data-table">
                 <thead>
-                    <tr class="fw-bold text-muted bg-light">
-                        <th class="ps-4 rounded-start min-w-50px">#</th>
-                        <th class="min-w-200px">Nama Layanan</th>
-                        <th class="min-w-250px">Deskripsi</th>
-                        <th class="min-w-110px text-end">Harga Dasar</th>
-                        <th class="min-w-90px text-center">Durasi</th>
-                        <th class="min-w-80px text-center">Status</th>
-                        <th class="min-w-80px text-end rounded-end pe-4">Aksi</th>
+                    <tr>
+                        <th class="ps-5">Layanan</th>
+                        <th>Deskripsi</th>
+                        <th class="text-end">Harga dasar</th>
+                        <th class="text-center">Durasi</th>
+                        <th>Status</th>
+                        <th class="text-end pe-5">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($services)): ?>
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-10">Belum ada layanan.</td>
+                            <td colspan="6" class="text-center text-muted py-12">Belum ada layanan.</td>
                         </tr>
                         <?php else: foreach ($services as $i => $s): ?>
                             <tr>
-                                <td class="ps-4 text-muted"><?= $i + 1 ?></td>
-                                <td class="fw-semibold"><?= htmlspecialchars($s['name']) ?></td>
+                                <td class="ps-5">
+                                    <div class="fw-semibold text-gray-900"><?= htmlspecialchars($s['name']) ?></div>
+                                    <div class="admin-table-meta mt-1">Layanan #<?= $i + 1 ?></div>
+                                </td>
                                 <td class="text-gray-600"><?= htmlspecialchars(mb_strimwidth($s['description'] ?? '', 0, 80, '...')) ?></td>
                                 <td class="text-end fw-bold">Rp <?= number_format($s['base_price'], 0, ',', '.') ?></td>
                                 <td class="text-center text-muted"><?= $s['duration_min'] ?> mnt</td>
-                                <td class="text-center">
-                                    <span class="badge badge-light-<?= $s['is_active'] ? 'success' : 'danger' ?>">
+                                <td>
+                                    <span class="badge badge-light-<?= $s['is_active'] ? 'success' : 'danger' ?> px-4 py-2">
                                         <?= $s['is_active'] ? 'Aktif' : 'Nonaktif' ?>
                                     </span>
                                 </td>
-                                <td class="text-end pe-4">
+                                <td class="text-end pe-5">
                                     <button class="btn btn-icon btn-sm btn-light-primary btn-edit"
                                         data-id="<?= $s['id_service'] ?>"
                                         data-name="<?= htmlspecialchars($s['name']) ?>"

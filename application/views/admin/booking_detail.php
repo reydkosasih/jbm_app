@@ -23,26 +23,64 @@ $steps = ['pending', 'confirmed', 'in_progress', 'waiting_payment', 'completed']
 $step_labels = ['Menunggu', 'Dikonfirmasi', 'Diservis', 'Tunggu Bayar', 'Selesai'];
 $current_step = array_search($booking->status, $steps);
 if ($current_step === false) $current_step = -1;
+
+$order_total = 0;
+foreach ($service_orders as $service_order_item) {
+    $order_total += ((float) $service_order_item->quantity * (float) $service_order_item->unit_price);
+}
+
+$timeline_total = count($status_logs);
+$customer_vehicle = trim(($booking->brand ?? '') . ' ' . ($booking->vehicle_model ?? ''));
 ?>
 
-<!-- Page Header -->
-<div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
-    <div>
-        <a href="<?= base_url('admin/bookings') ?>" class="text-muted fs-7 me-2">
-            <i class="fa-solid fa-arrow-left me-1"></i>Kembali
-        </a>
-        <h1 class="fs-2hx fw-bold mt-1">
-            Detail Booking
-            <span class="fs-4 text-muted fw-normal ms-2"><?= htmlspecialchars($booking->booking_code) ?></span>
-        </h1>
+<section class="admin-page-hero">
+    <div class="row g-4 align-items-end">
+        <div class="col-xl-8">
+            <a href="<?= base_url('admin/bookings') ?>" class="btn btn-sm btn-light-primary rounded-pill px-4 mb-4">
+                <i class="fa-solid fa-arrow-left me-2"></i>Kembali ke daftar booking
+            </a>
+            <div class="admin-page-hero__eyebrow">Booking workspace</div>
+            <h2 class="admin-page-hero__title fw-bold">Pantau progres booking <?= htmlspecialchars($booking->booking_code) ?> dari penerimaan hingga pembayaran.</h2>
+            <p class="admin-page-hero__desc">Halaman detail ini dirapikan agar admin bisa membaca profil pelanggan, order servis, timeline status, dan tindakan pembayaran dalam satu alur yang lebih terstruktur.</p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <span class="admin-chip"><i class="fa-solid fa-user"></i><?= htmlspecialchars($booking->customer_name) ?></span>
+                <span class="admin-chip"><i class="fa-solid fa-car-side"></i><?= htmlspecialchars($booking->plate_number) ?></span>
+                <span class="admin-chip"><i class="fa-solid fa-screwdriver-wrench"></i><?= htmlspecialchars($booking->service_name) ?></span>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="row g-3">
+                <div class="col-sm-6 col-xl-12">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4"><i class="fa-solid fa-file-invoice fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Status booking</div>
+                        <div class="mt-2"><span class="badge badge-light-<?= $si[0] ?> fs-6 px-4 py-2"><?= $si[1] ?></span></div>
+                        <div class="text-muted fs-7 mt-3">Booking pada tanggal <?= date('d M Y', strtotime($booking->booking_date)) ?> pukul <?= htmlspecialchars($booking->slot_label) ?>.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-12">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(16, 185, 129, 0.16); color: #059669;"><i class="fa-solid fa-wallet fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Nilai order</div>
+                        <div class="fs-3 fw-bold mt-1">Rp <?= number_format($order_total, 0, ',', '.') ?></div>
+                        <div class="text-muted fs-7 mt-2"><?= count($service_orders) ?> item servis dan sparepart, <?= $timeline_total ?> log status tercatat.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <span class="badge badge-light-<?= $si[0] ?> fs-6 px-4 py-2"><?= $si[1] ?></span>
-</div>
+</section>
 
-<!-- Progress Steps -->
 <?php if ($booking->status !== 'cancelled'): ?>
-    <div class="card card-flush mb-5">
-        <div class="card-body py-5">
+    <div class="admin-surface-card mb-6">
+        <div class="card-body p-5 p-lg-7">
+            <div class="d-flex flex-wrap align-items-start justify-content-between gap-4 mb-5">
+                <div>
+                    <div class="text-muted fs-8 text-uppercase fw-semibold mb-2">Progress booking</div>
+                    <h3 class="fw-bold mb-0">Tahapan pengerjaan kendaraan</h3>
+                </div>
+                <span class="admin-chip"><i class="fa-solid fa-list-check"></i><?= max($current_step + 1, 1) ?> dari <?= count($steps) ?> tahap</span>
+            </div>
             <div class="stepper stepper-links d-flex justify-content-center">
                 <?php foreach ($steps as $i => $step): ?>
                     <?php $done = $i < $current_step;
@@ -69,10 +107,8 @@ if ($current_step === false) $current_step = -1;
 <?php endif; ?>
 
 <div class="row g-5">
-    <!-- LEFT COLUMN -->
     <div class="col-lg-8">
 
-        <!-- Booking Info -->
         <div class="card card-flush mb-5">
             <div class="card-header">
                 <h3 class="card-title">Informasi Booking</h3>
@@ -91,7 +127,7 @@ if ($current_step === false) $current_step = -1;
                     <div class="col-sm-6">
                         <span class="text-muted d-block mb-1">Kendaraan</span>
                         <span class="fw-bold"><?= htmlspecialchars($booking->plate_number) ?></span>
-                        <span class="text-muted d-block"><?= htmlspecialchars(($booking->vehicle_brand ?? '') . ' ' . ($booking->vehicle_model ?? '')) ?></span>
+                        <span class="text-muted d-block"><?= htmlspecialchars($customer_vehicle !== '' ? $customer_vehicle : '-') ?></span>
                     </div>
                     <div class="col-sm-6">
                         <span class="text-muted d-block mb-1">Layanan</span>
@@ -115,7 +151,6 @@ if ($current_step === false) $current_step = -1;
             </div>
         </div>
 
-        <!-- Service Orders -->
         <div class="card card-flush mb-5">
             <div class="card-header">
                 <h3 class="card-title">Pesanan Servis / Sparepart</h3>
@@ -129,12 +164,12 @@ if ($current_step === false) $current_step = -1;
             </div>
             <div class="card-body p-0">
                 <?php if (empty($service_orders)): ?>
-                    <div class="text-center py-8 text-muted fs-7">Belum ada item.</div>
+                    <div class="text-center py-10 px-5 text-muted fs-7">Belum ada item servis atau sparepart.</div>
                 <?php else: ?>
                     <div class="table-responsive">
-                        <table class="table table-row-dashed align-middle gs-5 gy-3 fs-7 mb-0">
+                        <table class="table table-row-dashed align-middle gs-0 gy-0 fs-7 mb-0 admin-data-table">
                             <thead>
-                                <tr class="fw-bold text-muted bg-light">
+                                <tr>
                                     <th class="ps-5">Deskripsi</th>
                                     <th>Tipe</th>
                                     <th class="text-end">Qty</th>
@@ -146,13 +181,13 @@ if ($current_step === false) $current_step = -1;
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $total_service = 0;
-                                foreach ($service_orders as $so): $subtotal = $so->qty * $so->unit_price;
-                                    $total_service += $subtotal; ?>
+                                <?php foreach ($service_orders as $so): $subtotal = $so->quantity * $so->unit_price; ?>
                                     <tr>
-                                        <td class="ps-5 fw-semibold"><?= htmlspecialchars($so->description) ?></td>
-                                        <td><span class="badge badge-light-<?= $so->order_type === 'jasa' ? 'info' : 'warning' ?>"><?= $so->order_type === 'jasa' ? 'Jasa' : 'Sparepart' ?></span></td>
-                                        <td class="text-end"><?= $so->qty ?></td>
+                                        <td class="ps-5">
+                                            <div class="fw-semibold text-gray-900"><?= htmlspecialchars($so->description) ?></div>
+                                        </td>
+                                        <td><span class="badge badge-light-<?= $so->type === 'jasa' ? 'info' : 'warning' ?> px-4 py-2"><?= $so->type === 'jasa' ? 'Jasa' : 'Sparepart' ?></span></td>
+                                        <td class="text-end"><?= $so->quantity ?></td>
                                         <td class="text-end">Rp <?= number_format($so->unit_price, 0, ',', '.') ?></td>
                                         <td class="text-end fw-bold">Rp <?= number_format($subtotal, 0, ',', '.') ?></td>
                                         <?php if (in_array($booking->status, ['confirmed', 'in_progress'])): ?>
@@ -168,7 +203,7 @@ if ($current_step === false) $current_step = -1;
                             <tfoot>
                                 <tr class="fw-bold fs-6">
                                     <td class="ps-5" colspan="<?= in_array($booking->status, ['confirmed', 'in_progress']) ? 4 : 4 ?>">Total</td>
-                                    <td class="text-end">Rp <?= number_format($total_service, 0, ',', '.') ?></td>
+                                    <td class="text-end">Rp <?= number_format($order_total, 0, ',', '.') ?></td>
                                     <?php if (in_array($booking->status, ['confirmed', 'in_progress'])): ?><td></td><?php endif; ?>
                                 </tr>
                             </tfoot>
@@ -185,7 +220,6 @@ if ($current_step === false) $current_step = -1;
             <?php endif; ?>
         </div>
 
-        <!-- Mechanic Note -->
         <?php if (in_array($booking->status, ['confirmed', 'in_progress', 'waiting_payment', 'waiting_confirmation', 'completed'])): ?>
             <div class="card card-flush mb-5">
                 <div class="card-header">
@@ -200,7 +234,6 @@ if ($current_step === false) $current_step = -1;
             </div>
         <?php endif; ?>
 
-        <!-- Status Timeline -->
         <div class="card card-flush mb-5">
             <div class="card-header">
                 <h3 class="card-title">Riwayat Status</h3>
@@ -211,7 +244,7 @@ if ($current_step === false) $current_step = -1;
                 <?php else: ?>
                     <div class="timeline">
                         <?php foreach ($status_logs as $log):
-                            $lsi = $status_map[$log->new_status] ?? ['secondary', $log->new_status]; ?>
+                            $lsi = $status_map[$log->status] ?? ['secondary', $log->status]; ?>
                             <div class="timeline-item">
                                 <div class="timeline-line w-10px"></div>
                                 <div class="timeline-icon symbol symbol-circle symbol-10px me-4">
@@ -233,12 +266,10 @@ if ($current_step === false) $current_step = -1;
             </div>
         </div>
 
-    </div><!-- /LEFT COLUMN -->
+    </div>
 
-    <!-- RIGHT COLUMN -->
     <div class="col-lg-4">
 
-        <!-- Update Status -->
         <?php if (!empty($next)): ?>
             <div class="card card-flush mb-5">
                 <div class="card-header">
@@ -265,7 +296,6 @@ if ($current_step === false) $current_step = -1;
             </div>
         <?php endif; ?>
 
-        <!-- Payment Info -->
         <div class="card card-flush mb-5">
             <div class="card-header">
                 <h3 class="card-title">Pembayaran</h3>
@@ -274,7 +304,7 @@ if ($current_step === false) $current_step = -1;
                 <?php if (empty($payment)): ?>
                     <div class="text-center text-muted py-4">
                         <i class="fa-solid fa-file-invoice fs-3x mb-3"></i>
-                        <p>Belum ada invoice.</p>
+                        <p class="mb-0">Belum ada invoice.</p>
                     </div>
                 <?php else: ?>
                     <div class="d-flex flex-column gap-3">
@@ -292,7 +322,7 @@ if ($current_step === false) $current_step = -1;
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Status</span>
-                            <span class="badge badge-light-<?= $payment->status === 'paid' ? 'success' : 'warning' ?>">
+                            <span class="badge badge-light-<?= $payment->status === 'paid' ? 'success' : 'warning' ?> px-4 py-2">
                                 <?= $payment->status === 'paid' ? 'Lunas' : 'Belum Lunas' ?>
                             </span>
                         </div>
@@ -327,7 +357,7 @@ if ($current_step === false) $current_step = -1;
             </div>
         </div>
 
-    </div><!-- /RIGHT COLUMN -->
+    </div>
 </div>
 
 <!-- Modal: Add Service Order -->
@@ -547,12 +577,7 @@ if ($current_step === false) $current_step = -1;
             $.ajax({
                 url: BASE_URL + 'admin/booking/' + BOOKING_ID + '/generate-invoice',
                 method: 'POST',
-                headers: {
-                    'X-CSRF-Token': CSRF_HASH
-                },
-                data: csrfData(),
                 success: function(r) {
-                    CSRF_HASH = r.csrf_hash || CSRF_HASH;
                     if (r.success) {
                         Swal.fire({
                             icon: 'success',

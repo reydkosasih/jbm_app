@@ -267,11 +267,11 @@
             foreach ($items as $item): ?>
                 <tr>
                     <td><?= $no++ ?></td>
-                    <td><?= htmlspecialchars($item->item_name) ?></td>
-                    <td><?= $item->item_type === 'service' ? 'Jasa' : 'Sparepart' ?></td>
+                    <td><?= htmlspecialchars($item->description) ?></td>
+                    <td><?= $item->type === 'jasa' ? 'Jasa' : 'Sparepart' ?></td>
                     <td class="text-right"><?= $item->quantity ?></td>
                     <td class="text-right">Rp <?= number_format($item->unit_price, 0, ',', '.') ?></td>
-                    <td class="text-right" style="font-weight:bold">Rp <?= number_format($item->subtotal, 0, ',', '.') ?></td>
+                    <td class="text-right" style="font-weight:bold">Rp <?= number_format((float)$item->quantity * (float)$item->unit_price, 0, ',', '.') ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

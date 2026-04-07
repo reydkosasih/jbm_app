@@ -5,15 +5,69 @@ function sv($settings, $key, $default = '')
     return htmlspecialchars($settings[$key] ?? $default);
 }
 ?>
-<div class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="fs-2hx fw-bold">Pengaturan Bengkel</h1>
-</div>
 
-<ul class="nav nav-tabs nav-line-tabs mb-6 fs-6">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tabInfo">Informasi Bengkel</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabPayment">Pembayaran</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabOps">Operasional</a></li>
-</ul>
+<section class="admin-page-hero">
+    <div class="row g-4 align-items-end">
+        <div class="col-xl-7">
+            <div class="admin-page-hero__eyebrow">Workshop settings</div>
+            <h2 class="admin-page-hero__title fw-bold">Atur identitas bengkel, rekening pembayaran, dan aturan operasional dari satu workspace.</h2>
+            <p class="admin-page-hero__desc">Area settings dirapikan agar setiap kelompok pengaturan lebih mudah dipahami, terutama saat admin perlu mengecek data profil bengkel dari perangkat mobile.</p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <span class="admin-chip"><i class="fa-solid fa-shop"></i><?= sv($settings, 'workshop_name', 'JBM Bengkel Mobil') ?></span>
+                <span class="admin-chip"><i class="fa-solid fa-credit-card"></i>Pengaturan pembayaran tersedia</span>
+                <span class="admin-chip"><i class="fa-solid fa-gears"></i>Operasional dapat diubah per tab</span>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4"><i class="fa-solid fa-building fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Profil bengkel</div>
+                        <div class="fs-5 fw-bold mt-1">Brand dan kontak</div>
+                        <div class="text-muted fs-7 mt-2">Nama, alamat, WhatsApp, dan lokasi map.</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(16, 185, 129, 0.16); color: #059669;"><i class="fa-solid fa-landmark fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Pembayaran</div>
+                        <div class="fs-5 fw-bold mt-1">Info rekening</div>
+                        <div class="text-muted fs-7 mt-2">Dipakai pada invoice dan instruksi transfer.</div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="admin-kpi-card">
+                        <div class="admin-kpi-card__icon mb-4" style="background: rgba(14, 165, 233, 0.16); color: #0284c7;"><i class="fa-solid fa-sliders fs-3"></i></div>
+                        <div class="text-muted fs-8 text-uppercase fw-semibold">Operasional</div>
+                        <div class="fs-5 fw-bold mt-1">Jam kerja, kapasitas booking, dan reminder</div>
+                        <div class="text-muted fs-7 mt-2">Semua pengaturan inti operasional diringkas per tab agar mudah dikelola.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="admin-surface-card mb-6">
+    <div class="card-body p-5 p-lg-7">
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-4 mb-4">
+            <div>
+                <div class="text-muted fs-8 text-uppercase fw-semibold mb-2">Navigasi pengaturan</div>
+                <h3 class="fw-bold mb-0">Pilih kelompok konfigurasi yang ingin diperbarui</h3>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="admin-chip"><i class="fa-solid fa-floppy-disk"></i>Simpan per section</span>
+                <span class="admin-chip"><i class="fa-solid fa-mobile-screen-button"></i>Lebih nyaman di mobile</span>
+            </div>
+        </div>
+        <ul class="nav nav-tabs nav-line-tabs fs-6">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tabInfo">Informasi Bengkel</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabPayment">Pembayaran</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabOps">Operasional</a></li>
+        </ul>
+    </div>
+</div>
 
 <div class="tab-content">
 

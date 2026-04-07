@@ -12,11 +12,12 @@ Web application bengkel mobil berbasis CodeIgniter 3 untuk booking servis, monit
 1. Install dependency dengan `composer install`.
 2. Copy `.env.example` menjadi `.env` lalu isi kredensial yang sesuai.
 3. Import `database/jbm_schema.sql` ke MySQL.
-4. Pastikan folder `uploads/` dan `application/logs/` writable.
-5. Atur web server menggunakan konfigurasi pada `deployment/nginx.conf` atau Apache `.htaccess`.
+4. Import `database/jbm_seed.sql` untuk data contoh.
+5. Pastikan folder `uploads/` dan `application/logs/` writable.
+6. Atur web server menggunakan konfigurasi pada `deployment/nginx.conf` atau Apache `.htaccess`.
 
 ## Default Login
-- Admin: `admin@jbm.id` / `admin123`
+- Admin: `admin@jbmbengkel.com` / `admin123`
 
 Ganti password default segera setelah deploy.
 

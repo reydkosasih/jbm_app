@@ -367,15 +367,15 @@
                 foreach ($items as $item): ?>
                     <tr>
                         <td><?= $no++ ?></td>
-                        <td><?= htmlspecialchars($item->item_name) ?></td>
+                        <td><?= htmlspecialchars($item->description) ?></td>
                         <td style="text-align:center">
-                            <span style="background:<?= $item->item_type === 'service' ? '#e8f7ff' : '#fff8e1' ?>;color:<?= $item->item_type === 'service' ? '#0066cc' : '#b45309' ?>;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:600">
-                                <?= $item->item_type === 'service' ? 'Jasa' : 'Sparepart' ?>
+                            <span style="background:<?= $item->type === 'jasa' ? '#e8f7ff' : '#fff8e1' ?>;color:<?= $item->type === 'jasa' ? '#0066cc' : '#b45309' ?>;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:600">
+                                <?= $item->type === 'jasa' ? 'Jasa' : 'Sparepart' ?>
                             </span>
                         </td>
                         <td class="text-right"><?= $item->quantity ?></td>
                         <td class="text-right">Rp <?= number_format($item->unit_price, 0, ',', '.') ?></td>
-                        <td class="text-right" style="font-weight:600">Rp <?= number_format($item->subtotal, 0, ',', '.') ?></td>
+                        <td class="text-right" style="font-weight:600">Rp <?= number_format((float)$item->quantity * (float)$item->unit_price, 0, ',', '.') ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

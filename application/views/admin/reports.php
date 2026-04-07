@@ -111,7 +111,7 @@ $year = date('Y');
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-row-dashed fs-7 align-middle gs-5 gy-3 mb-0">
+                        <table id="dailyTable" class="table table-row-dashed fs-7 align-middle gs-5 gy-3 mb-0 admin-data-table">
                             <thead>
                                 <tr class="fw-bold text-muted bg-light">
                                     <th class="ps-5">Invoice</th>
@@ -176,7 +176,7 @@ $year = date('Y');
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-row-dashed fs-7 align-middle gs-5 gy-3 mb-0">
+                        <table id="monthlyTable" class="table table-row-dashed fs-7 align-middle gs-5 gy-3 mb-0 admin-data-table">
                             <thead>
                                 <tr class="fw-bold text-muted bg-light">
                                     <th class="ps-5">Tanggal</th>
@@ -224,7 +224,7 @@ $year = date('Y');
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-row-dashed fs-7 align-middle gs-5 gy-3 mb-0">
+                        <table id="yearlyTable" class="table table-row-dashed fs-7 align-middle gs-5 gy-3 mb-0 admin-data-table">
                             <thead>
                                 <tr class="fw-bold text-muted bg-light">
                                     <th class="ps-5">Bulan</th>
@@ -277,6 +277,12 @@ $year = date('Y');
             document.getElementById('dailyTitle').textContent = 'Transaksi ' + date;
             document.getElementById('dailyResult').classList.remove('d-none');
             document.getElementById('btnExportDaily').href = BASE_URL + 'admin/reports/export?type=daily&date=' + date;
+            if (window.JBM) {
+                JBM.refreshAdminDataTable('#dailyTable', {
+                    paging: rows.length > 10
+                });
+                JBM.adjustAdminDataTables();
+            }
         });
     });
 
@@ -298,6 +304,12 @@ $year = date('Y');
             document.getElementById('monthlySummary').innerHTML = summaryCard('Total Transaksi', cnt, 'info') + summaryCard('Total Pendapatan', fmt(tot), 'primary');
             document.getElementById('monthlyResult').classList.remove('d-none');
             document.getElementById('btnExportMonthly').href = BASE_URL + 'admin/reports/export?type=monthly&month=' + month + '&year=' + year;
+            if (window.JBM) {
+                JBM.refreshAdminDataTable('#monthlyTable', {
+                    paging: days.length > 10
+                });
+                JBM.adjustAdminDataTables();
+            }
 
             // Chart
             const labels = days.map(d => d.date.split('-')[2]);
@@ -348,6 +360,12 @@ $year = date('Y');
             const cnt = months.reduce((s, m) => s + parseInt(m.count || 0), 0);
             document.getElementById('yearlySummary').innerHTML = summaryCard('Total Transaksi', cnt, 'info') + summaryCard('Total Pendapatan', fmt(tot), 'primary');
             document.getElementById('yearlyResult').classList.remove('d-none');
+            if (window.JBM) {
+                JBM.refreshAdminDataTable('#yearlyTable', {
+                    paging: months.length > 10
+                });
+                JBM.adjustAdminDataTables();
+            }
 
             const labels = months.map((m, i) => monthNames[i]);
             const totals = months.map(m => parseFloat(m.total || 0));
